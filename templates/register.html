@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>회원가입</title>
+    <link href="static/img/main_logo_32.png" rel="icon" />
+    <link rel="stylesheet" href="static/css/style.css" />
+  </head>
+  <body>
+    <h1>회원가입</h1>
+    <form>
+      <label for="username">이름:</label>
+      <input type="text" id="username" name="username" required />
+
+      <label for="email">이메일:</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="password">비밀번호:</label>
+      <input type="password" id="password" name="password" required />
+
+      <label for="confirm-password">비밀번호 확인:</label>
+      <input
+        type="password"
+        id="confirm-password"
+        name="confirm-password"
+        required
+      />
+
+      <div id="password-warning"></div>
+
+      <div class="form-footer">
+        <input type="submit" value="가입하기" />
+        <input type="button" value="취소" onclick="window.history.back()" />
+      </div>
+    </form>
+    <footer>
+      Software Engineering and Practice Team_6 <br />여재우 김동재
+    </footer>
+  </body>
+</html>
