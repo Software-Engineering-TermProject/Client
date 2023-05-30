@@ -18,5 +18,10 @@ def register_page():
     return render_template('register.html')
 
 
+@app.route('/market')
+def market_page():
+    return render_template('market.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
