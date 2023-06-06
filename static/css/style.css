@@ -4,6 +4,7 @@ body {
   text-decoration: none;
   font-family: sans-serif;
   color: #f8f8f2;
+  overflow-y: auto;
 }
 header {
   background-color: #282a36;
@@ -123,7 +124,7 @@ input[type="button"]:active {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   height: 100%;
   padding: 0 20px;
@@ -200,9 +201,20 @@ input[type="button"]:active {
   margin-top: 20px;
 }
 
+.market_trade {
+  background-color: #44475a;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.mypage {
+  margin-bottom: 20px;
+}
+
 /*전체적인 footer 테마*/
 footer {
-  position: fixed;
+  position: static;
   bottom: 0;
   width: 100%;
   text-align: center;
