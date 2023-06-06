@@ -12,7 +12,7 @@
         color: #000000;
       }
       a {
-        color: white;
+        color: #f8f8f2;
         text-decoration: none;
       }
     </style>
@@ -32,23 +32,35 @@
           </a>
         </div>
         <div class="login-button">
+          {%if userid%}
+          <a href="/logout">로그아웃</a>
+          {%else%}
           <a href="/login">로그인</a>
+          {%endif%}
         </div>
         <div class="login-button">
           <a href="/market">코인 거래</a>
         </div>
       </div>
     </header>
+    <div class="mypage">
+      {%if userid%}
+      <div id="userInfoContainer1">
+        <!--계정 정보를 보여주는 내용-->
+        <a href="/mypage">내 정보 확인하기</a>
+      </div>
+      {%else%}
+      <div id="userInfoContainer2"><a href="/login">로그인</a>을 해주세요.</div>
+      {%endif%}
+    </div>
     <div class="container">
       <div class="dashboard">
         <div class="chart">
           <div id="chart"></div>
         </div>
-        <div class="mypage">
-          <div id="userInfoContainer"></div>
-        </div>
       </div>
     </div>
+
     <script>
       var options = {
         series: [
@@ -98,6 +110,7 @@
             },
           },
         },
+
         legend: {
           position: "top",
           horizontalAlign: "right",
@@ -112,20 +125,6 @@
 
       var chart = new ApexCharts(document.querySelector("#chart"), options);
       chart.render();
-
-      var isLoggedIn = false;
-
-      function displayContent() {
-        var userInfoContainer = document.getElementById("userInfoContainer");
-
-        if (isLoggedIn) {
-          userInfoContainer.innerHTML = "계정 정보를 보여주는 내용";
-        } else {
-          userInfoContainer.innerHTML =
-            "<a href='/login'>로그인</a>을 해주세요.";
-        }
-      }
-      displayContent();
     </script>
     <footer>
       Software Engineering and Practice Team_6 <br />여재우 김동재

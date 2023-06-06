@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>마이페이지</title>
+    <link href="static/css/style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      // 서버에서 추정 자산 데이터를 가져와서 화면에 표시하는 함수
+      function fetchEstimatedAssets() {
+        axios
+          .get("/api/estimated-assets") // 데이터를 가져올 API 엔드포인트 주소
+          .then(function (response) {
+            // 요청이 성공했을 때 실행되는 콜백 함수
+            var estimatedAssets = response.data; // 가져온 데이터
+            var estimatedAssetsElement =
+              document.getElementById("estimated-assets");
+            estimatedAssetsElement.textContent = estimatedAssets; // 추정 자산 표시
+          })
+          .catch(function (error) {
+            // 요청이 실패했을 때 실행되는 콜백 함수
+            console.error(error);
+          });
+      }
+
+      // 페이지 로드 시 추정 자산 데이터를 가져옴
+      document.addEventListener("DOMContentLoaded", function () {
+        fetchEstimatedAssets();
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="header-wrapper">
+        <div class="logo">
+          <a href="/">
+            <img src="static/img/main_logo_32.png" alt="업비투 로고" />
+            업비투
+          </a>
+        </div>
+        <div class="login-button">
+          {%if userid%}
+          <a href="/logout">로그아웃</a>
+          {%else%}
+          <a href="/login">로그인</a>
+          {%endif%}
+        </div>
+        <div class="login-button">
+          <a href="/market">코인 거래</a>
+        </div>
+      </div>
+    </header>
+    <div class="mypage_container">
+      <div class="mypage-info">
+        <div class="info-item">
+          <img src="static/img/user_32.png" alt="유저이미지" />
+        </div>
+        <div class="info-item">
+          <span class="info-label">유저이름:</span>
+          <span class="info-value" id="username">Loading...</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">계좌 잔고:</span>
+          <span class="info-value" id="account-balance">Loading...</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">보유 코인 수:</span>
+          <span class="info-value" id="coin-count">Loading...</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">코인 가격:</span>
+          <span class="info-value" id="coin-price">Loading...</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">추정 자산:</span>
+          <span class="info-value" id="estimated-assets">Loading...</span>
+        </div>
+        <div class="button-container">
+          <button class="transaction-button">입금</button>
+          <button class="transaction-button">출금</button>
+        </div>
+      </div>
+    </div>
+    <footer>
+      Software Engineering and Practice Team_6 <br />여재우 김동재
+    </footer>
+  </body>
+</html>
