@@ -43,25 +43,24 @@
         </div>
       </div>
     </header>
+    <div class="mypage">
+      {%if userid%}
+      <div id="userInfoContainer1">
+        <!--계정 정보를 보여주는 내용-->
+        <a href="/mypage">내 정보 확인하기</a>
+      </div>
+      {%else%}
+      <div id="userInfoContainer2"><a href="/login">로그인</a>을 해주세요.</div>
+      {%endif%}
+    </div>
     <div class="container">
       <div class="dashboard">
         <div class="chart">
           <div id="chart"></div>
         </div>
-        <div class="mypage">
-          {%if userid%}
-          <div id="userInfoContainer1">
-            <!--계정 정보를 보여주는 내용-->
-            <iframe src="mypage.html" width="100%" height="200"></iframe>
-          </div>
-          {%else%}
-          <div id="userInfoContainer2">
-            <a href="/login">로그인</a>을 해주세요.
-          </div>
-          {%endif%}
-        </div>
       </div>
     </div>
+
     <script>
       var options = {
         series: [

@@ -31,8 +31,31 @@
     </script>
   </head>
   <body>
-    <div class="container">
+    <header>
+      <div class="header-wrapper">
+        <div class="logo">
+          <a href="/">
+            <img src="static/img/main_logo_32.png" alt="업비투 로고" />
+            업비투
+          </a>
+        </div>
+        <div class="login-button">
+          {%if userid%}
+          <a href="/logout">로그아웃</a>
+          {%else%}
+          <a href="/login">로그인</a>
+          {%endif%}
+        </div>
+        <div class="login-button">
+          <a href="/market">코인 거래</a>
+        </div>
+      </div>
+    </header>
+    <div class="mypage_container">
       <div class="mypage-info">
+        <div class="info-item">
+          <img src="static/img/user_32.png" alt="유저이미지" />
+        </div>
         <div class="info-item">
           <span class="info-label">유저이름:</span>
           <span class="info-value" id="username">Loading...</span>
@@ -53,7 +76,14 @@
           <span class="info-label">추정 자산:</span>
           <span class="info-value" id="estimated-assets">Loading...</span>
         </div>
+        <div class="button-container">
+          <button class="transaction-button">입금</button>
+          <button class="transaction-button">출금</button>
+        </div>
       </div>
     </div>
+    <footer>
+      Software Engineering and Practice Team_6 <br />여재우 김동재
+    </footer>
   </body>
 </html>

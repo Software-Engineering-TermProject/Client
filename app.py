@@ -51,6 +51,9 @@ def logout():
 def market_page():
     return render_template('market.html')
 
+@app.route('/mypage')
+def my_page():
+    return render_template('mypage.html')
 
 if __name__ == "__main__":
     basedir = os.path.abspath(os.path.dirname(__file__))  
