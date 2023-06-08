@@ -5,6 +5,9 @@ body {
   font-family: sans-serif;
   color: #f8f8f2;
   overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 header {
   background-color: #282a36;
@@ -180,7 +183,7 @@ input[type="button"]:active {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.transaction-button {
+.deposit-button {
   background-color: #2ecc71;
   color: #f8f8f2;
   padding: 10px 20px;
@@ -189,12 +192,29 @@ input[type="button"]:active {
   cursor: pointer;
 }
 
-.transaction-button:hover {
+.deposit-button:hover {
   background-color: #29b765;
 }
 
-.transaction-button:active {
+.deposit-button:active {
   background-color: #279e5f;
+}
+
+.withdraw-button {
+  background-color: #e74c3c;
+  color: #f8f8f2;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.withdraw-button:hover {
+  background-color: #cf4339;
+}
+
+.withdraw-button:active {
+  background-color: #c33228;
 }
 
 .button-container {
@@ -214,7 +234,7 @@ input[type="button"]:active {
 
 /*전체적인 footer 테마*/
 footer {
-  position: static;
+  position: fixed;
   bottom: 0;
   width: 100%;
   text-align: center;
