@@ -99,6 +99,28 @@ def deposit():
     
     return render_template('deposit.html', form=form, userid=userid)
 
+#출금
+@app.route('/withdraw', methods=['GET', 'POST'])
+def withdraw():
+    userid = session.get('userid', None)
+    
+    form = DepositForm()
+    if form.validate_on_submit():
+        if not userid:
+            return redirect('/login')
+        
+        user = User.query.filter_by(userid=userid).first()
+        
+        if user.account_balance is None:  # account_balance가 None인 경우 초기값 설정
+            user.account_balance = 0
+        user.account_balance += form.data.get('account_balance')
+
+        db.session.commit()
+
+        return redirect('/mypage')
+    
+    return render_template('withdraw.html', form=form, userid=userid)
+
 
 # 마켓 페이지
 @app.route('/market', methods=['GET'])
