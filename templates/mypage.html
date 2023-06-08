@@ -7,26 +7,28 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-      // 서버에서 추정 자산 데이터를 가져와서 화면에 표시하는 함수
-      function fetchEstimatedAssets() {
+      // 유저 정보를 가져와서 화면에 표시
+      function fetchMyInfo() {
         axios
-          .get("/api/estimated-assets") // 데이터를 가져올 API 엔드포인트 주소
+          .get("/getMyInfo")
           .then(function (response) {
-            // 요청이 성공했을 때 실행되는 콜백 함수
-            var estimatedAssets = response.data; // 가져온 데이터
-            var estimatedAssetsElement =
-              document.getElementById("estimated-assets");
-            estimatedAssetsElement.textContent = estimatedAssets; // 추정 자산 표시
+            var info = response.data;
+            document.getElementById("username").textContent = info.username;
+            document.getElementById("account-balance").textContent =
+              info.account_balance;
+            document.getElementById("coin-count").textContent = info.coin_count;
+            document.getElementById("coin-price").textContent = info.coin_price;
+            document.getElementById("estimated-assets").textContent =
+              info.estimated_assets;
           })
           .catch(function (error) {
-            // 요청이 실패했을 때 실행되는 콜백 함수
             console.error(error);
           });
       }
 
-      // 페이지 로드 시 추정 자산 데이터를 가져옴
+      // 페이지 로드 시 유저 정보를 get
       document.addEventListener("DOMContentLoaded", function () {
-        fetchEstimatedAssets();
+        fetchMyInfo();
       });
     </script>
   </head>
@@ -56,29 +58,34 @@
         <div class="info-item">
           <img src="static/img/user_32.png" alt="유저이미지" />
         </div>
+        <br />
         <div class="info-item">
-          <span class="info-label">유저이름:</span>
-          <span class="info-value" id="username">Loading...</span>
+          <span class="info-label">유저이름 :</span>
+          <span class="info-value" id="username"></span>
         </div>
+        <br />
         <div class="info-item">
-          <span class="info-label">계좌 잔고:</span>
-          <span class="info-value" id="account-balance">Loading...</span>
+          <span class="info-label">계좌 잔고 :</span>
+          <span class="info-value" id="account-balance"></span>
         </div>
+        <br />
         <div class="info-item">
-          <span class="info-label">보유 코인 수:</span>
-          <span class="info-value" id="coin-count">Loading...</span>
+          <span class="info-label">보유 코인 수 :</span>
+          <span class="info-value" id="coin-count"></span>
         </div>
+        <br />
         <div class="info-item">
-          <span class="info-label">코인 가격:</span>
-          <span class="info-value" id="coin-price">Loading...</span>
+          <span class="info-label">코인 가격 :</span>
+          <span class="info-value" id="coin-price"></span>
         </div>
+        <br />
         <div class="info-item">
-          <span class="info-label">추정 자산:</span>
-          <span class="info-value" id="estimated-assets">Loading...</span>
+          <span class="info-label">추정 자산 :</span>
+          <span class="info-value" id="estimated-assets"></span>
         </div>
         <div class="button-container">
-          <button class="transaction-button">입금</button>
-          <button class="transaction-button">출금</button>
+          <button class="deposit-button">입금</button>
+          <button class="withdraw-button">출금</button>
         </div>
       </div>
     </div>
