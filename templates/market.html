@@ -13,33 +13,9 @@
         padding: 20px;
         box-sizing: border-box;
       }
-      .post {
-        width: 30%;
-        margin-bottom: 20px;
-        background-color: #44475a;
-        padding: 20px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      .post h3 {
-        margin-top: 0;
-      }
-      .post p {
-        margin-bottom: 0;
-      }
-      .buy-button {
-        background-color: #2ecc71;
-        color: #f8f8f2;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-      }
       .new-post-link {
-        float: right;
-        margin-top: 10px;
-        margin-right: 10px;
+        text-decoration: none;
+        color: #f8f8f2;
       }
     </style>
   </head>
@@ -53,18 +29,21 @@
           </a>
         </div>
         <div class="post-link">
-          <a class="new-post-link" href="/post">게시물 작성</a>
+          <a class="new-post-link" href="/post"
+            ><img src="static/img/sell.png" style="height: 32px" /> 게시물
+            작성</a
+          >
         </div>
       </div>
     </header>
     <div class="container">
       {% for post in posts %}
-      <div class="post">
+      <div class="form">
         <h3>{{ post.title }}</h3>
         <p>{{ post.content }}</p>
         <p>Posted by: {{ post.author }}</p>
         <p>Date: {{ post.date }}</p>
-        <a href="/"><button class="deposit-button">사기</button></a>
+        <a href="/"><button class="confirm-button">사기</button></a>
       </div>
       {% endfor %}
     </div>
