@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="static/css/style.css" />
     <link href="static/img/main_logo_32.png" rel="icon" />
     <script>
-      function cancelDeposit() {
+      function cancelWithdraw() {
         window.location.href = "/mypage";
       }
     </script>
@@ -14,13 +14,14 @@
   <body>
     <div class="form">
       <h1>출금</h1>
-      <form action="/deposit" method="POST">
+      <form action="/withdraw" method="POST">
         {{ form.csrf_token }}
         <div>
-          <label for="depositAmount">출금 가능 금액:</label>
+          <label for="withdrawAmount">출금 가능 금액 :</label>
+          <span class="info-value">{{ account_balance }} 원</span>
         </div>
         <div>
-          <label for="depositAmount">출금 금액:</label>
+          <label for="withdrawAmount">출금할 금액 :</label>
           <input
             type="number"
             id="account_balance"
@@ -31,7 +32,7 @@
 
         <div class="form-buttons">
           <input type="submit" value="출금하기" />
-          <button type="button" class="cancel-button" onclick="cancelDeposit()">
+          <button type="button" class="cancel-button" onclick="cancelWithdraw()">
             닫기
           </button>
         </div>

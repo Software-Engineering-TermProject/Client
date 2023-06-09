@@ -9,13 +9,7 @@
       .form h3 {
         margin-top: 0;
       }
-      .form input[type="text"],
-      .form textarea {
-        width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-        margin-bottom: 10px;
-      }
+
       .form-buttons {
         display: flex;
         justify-content: flex-end;
@@ -29,10 +23,9 @@
       function cancelPost() {
         window.location.href = "/market";
       }
-
       window.addEventListener("DOMContentLoaded", function () {
         var numberInput = document.getElementById("number");
-        var costInput = document.getElementById("cost");
+        var priceInput = document.getElementById("price");
         var form = document.querySelector("form");
 
         form.addEventListener("submit", function (event) {
@@ -46,11 +39,11 @@
           }
 
           // 판매가 범위 제한
-          var costValue = costInput.value;
-          var cost = parseFloat(costValue);
-          if (isNaN(cost) || cost <= 0) {
+          var priceValue = priceInput.value;
+          var price = parseFloat(priceValue);
+          if (isNaN(price) || price <= 0) {
             event.preventDefault();
-            alert("판매가는 정닥히 하세요");
+            alert("판매가는 적절히 하세요");
             return;
           }
         });
@@ -59,17 +52,17 @@
   </head>
   <body>
     <div class="form">
-      <h1>판매 게시물 작성</h1>
+      <h3>판매 게시물 작성</h3>
       <form action="/post" method="POST">
         {{ form.csrf_token }}
         <div>
           <label for="number">판매하실 코인의 갯수 : </label>
-          <input type="number" name="number" id="number" required />
+          <input type="number" name="title" id="number" required />
         </div>
         <br />
         <div>
-          <label for="cost">판매가</label>
-          <input type="number" name="cost" id="cost" required />
+          <label for="price">판매가 : </label>
+          <input type="number" name="price" id="price" required />
         </div>
         <br />
         <div class="form-buttons">
