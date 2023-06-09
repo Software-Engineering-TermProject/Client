@@ -47,7 +47,7 @@
           method="POST"
         >
           {{ form.csrf_token }}
-          <input class="delete-button" type="submit" value="X" />
+          <button class="delete-button" type="submit" value="X">X</button>
         </form>
         {% endif %}
         <h3>[판매중]{{ post.title }}개</h3>
@@ -79,10 +79,19 @@
                   구매 확인
                 </h1>
                 <button
-                  type="button"
+                  type="submit"
                   class="close"
                   data-dismiss="modal"
                   aria-label="Close"
+                  style="
+                    background-color: #e74c3c;
+                    color: #f8f8f2;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    font-size: 15px;
+                  "
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
