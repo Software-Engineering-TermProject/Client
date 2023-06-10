@@ -1,17 +1,75 @@
 import os
+import json
+import time
 from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models import Post, db, User
+from models import Coin, Post, PurchaseHistory, db, User
 from flask_wtf.csrf import CSRFProtect
-from Forms import PostForm, RegisterForm, LoginForm, DepositForm
+from Forms import BuycoinForm, PostForm, RegisterForm, LoginForm, DepositForm
 from flask_wtf import FlaskForm
 
 app = Flask(__name__)
 
+#메인페이지
 @app.route('/')
 def main_page():
     userid = session.get('userid', None)
-    return render_template('main.html', userid = userid)
+    form = BuycoinForm()
+
+    if userid:
+        user = User.query.filter_by(userid=userid).first()
+        remaining_coins = Coin.query.get(1).marketCoin_count
+        purchase_histories = PurchaseHistory.query.filter_by(user_id=user.id).all()
+        purchase_prices = json.dumps([purchase.post_price for purchase in purchase_histories])
+        purchase_timestamps = json.dumps([purchase.timestamp.isoformat() for purchase in purchase_histories])
+
+    else:
+        remaining_coins = Coin.query.get(1).marketCoin_count
+        purchase_prices = json.dumps([130,70,110])
+        purchase_timestamps = json.dumps([0,1,2])
+
+    return render_template('main.html', form=form, userid=userid, remaining_coins=remaining_coins, purchase_prices=purchase_prices, purchase_timestamps=purchase_timestamps)
+
+
+#마켓 자체 코인구매
+@app.route('/buyAtMarket', methods=['GET','POST'])
+def buy_coin():
+    userid = session.get('userid', None)
+    if userid is None:
+        return redirect('/login')
+    
+    if request.method == 'GET':
+        return render_template('buyatmarket.html')
+    else:
+        coin_to_buy = int(request.form.get('coin_to_buy'))
+        
+        # 유효한 coin_id, coin_to_buy를 받았는지 확인
+        if not coin_to_buy or coin_to_buy <= 0:
+            return "유효한 구매할 코인 수를 입력하세요.", 400
+
+        coin = Coin.query.get(1)
+        
+        # 존재하는 코인인지 확인
+        if coin is None:
+            return "유효하지 않은 코인입니다.", 400
+        
+        user = User.query.filter_by(userid=userid).first()
+
+        if coin.marketCoin_count < coin_to_buy:
+            return "마켓에 충분한 코인이 없습니다.", 400
+
+        if user.account_balance < coin_to_buy * coin.market_price:
+            return "잔액이 부족합니다.", 405
+
+        user.account_balance -= coin_to_buy * coin.market_price
+        coin.marketCoin_count -= coin_to_buy
+        user.coin_count += coin_to_buy
+
+        db.session.commit()
+
+        return redirect('/')
+
+
 
 #회원가입
 @app.route('/register', methods = ['GET', 'POST'])
@@ -22,8 +80,11 @@ def register():
         user.userid = form.data.get('userid')
         user.username = form.data.get('username')
         user.password = form.data.get('password')
+        db.session.add(user)
 
-        db.session.add(user) #DB저장
+        coin = Coin(marketCoin_count=100, market_price=100)
+        db.session.add(coin)
+
         db.session.commit() #변동사항 반영
         
         return redirect('/login') 
@@ -33,11 +94,10 @@ def register():
 #로그인
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm() #로그인폼
-    if form.validate_on_submit(): #유효성 검사
-        #print('{}가 로그인 했습니다'.format(form.data.get('userid')))
-        session['userid']=form.data.get('userid') #form에서 가져온 userid를 세션에 저장
-        return redirect('/') #성공하면 main.html로
+    form = LoginForm()
+    if form.validate_on_submit(): 
+        session['userid']=form.data.get('userid')
+        return redirect('/')
     return render_template('login.html', form=form)
 
 
@@ -51,7 +111,7 @@ def logout():
 @app.route('/mypage', methods=['GET'])
 def mypage():
     userid = session.get('userid', None)
-    if not userid:  # 로그인되어 있지 않은 경우
+    if not userid:  # 로그인 x인 경우
         return redirect('/login')
     
     users = User.query.all()
@@ -77,6 +137,11 @@ def getMyInfo():
     }
     
     return jsonify(info)
+
+@app.route('/getMarketPrice', methods=['GET'])
+def get_market_price():
+    coin = Coin.query.get(1)
+    return jsonify(coin.market_price)
 
 #입금
 @app.route('/deposit', methods=['GET', 'POST'])
@@ -135,8 +200,12 @@ def withdraw():
 @app.route('/market', methods=['GET'])
 def market_page():
     userid = session.get('userid', None)
-    posts = Post.query.all()
     form = FlaskForm()
+    if userid:
+        posts = Post.query.all()
+    else:
+        posts = []
+    
     return render_template('market.html', posts=posts, userid=userid, form=form)    
 
 # 게시물 작성
@@ -190,12 +259,20 @@ def buy_post(post_id):
     
     post = Post.query.get_or_404(post_id)
     user = User.query.filter_by(userid=userid).first()
+    coin = Coin.query.get(1)
 
     if user.account_balance < post.price:
         return redirect('/')  # 계정 잔고가 부족한 경우 메인 페이지로 리다이렉트
     
     user.account_balance -= post.price  # 계정 잔고 감소
     user.coin_count += int(post.title)  # 코인 수 증가
+
+     # 코인 시세를 구매한 게시물의 코인 가격으로 업데이트
+    coin.market_price = post.price
+
+    # 새 구매 이력(코인 시세 변동 기록) 생성
+    purchase = PurchaseHistory(user_id=user.id, post_price=post.price)
+    db.session.add(purchase)
 
     db.session.delete(post)
     db.session.commit()
@@ -210,7 +287,7 @@ if __name__ == "__main__":
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + dbfile
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True    
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False   
-    app.config['SECRET_KEY']='asdfasdfasdfqwertx' #임의로 해시값 적용
+    app.config['SECRET_KEY']='asdfasdfasdfqwertx' #임의의 해시값
     app.config['WTF_CSRF_ENABLED'] = True
     
     csrf = CSRFProtect(app)
@@ -220,5 +297,24 @@ if __name__ == "__main__":
     db.app = app
     with app.app_context():
         db.create_all()  
+        
+        # dummy_posts = [
+        #     {'title': '10', 'price': 130, 'author': 'User1'},
+        #     {'title': '25', 'price': 70, 'author': 'User2'},
+        #     {'title': '18', 'price': 110, 'author': 'User3'},
+        # ]
+        # for dummy_post in dummy_posts:
+        #     if not Post.query.filter_by(title=dummy_post['title'], author=dummy_post['author']).first():
+        #         post = Post()
+        #         post.title = dummy_post['title']
+        #         post.price = dummy_post['price']
+        #         post.author = dummy_post['author']
+        #         db.session.add(post)
+
+        
+        if Coin.query.get(1) is None:
+            coin = Coin(marketCoin_count=100, market_price=100)
+            db.session.add(coin)
+            db.session.commit()
 
     app.run(host='127.0.0.1', port=5000, debug=True) 

@@ -27,3 +27,20 @@ class Post(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+        
+#마켓 자체코인 정보        
+class Coin(db.Model):
+    __tablename__ = 'coin'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    marketCoin_count = db.Column(db.Integer, nullable=False, default=100)
+    market_price = db.Column(db.Integer, nullable=False, default=100)
+
+#코인 시세 정보 (구매한 게시물 코인 가격들)
+class PurchaseHistory(db.Model):
+    __tablename__ = 'purchase_history'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_price = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now)
