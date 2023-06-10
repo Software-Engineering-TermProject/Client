@@ -40,6 +40,10 @@
     <div class="container">
       {% for post in posts %}
       <div class="post">
+        <h3>[판매중] {{ post.title }}개</h3>
+        <p>{{ post.price }}원</p>
+        <p>Posted by: {{ post.author }}</p>
+        <p>Date: {{ post.date }}</p>
         {% if post.author == userid %}
         <form
           class="xbox"
@@ -47,13 +51,9 @@
           method="POST"
         >
           {{ form.csrf_token }}
-          <button class="delete-button" type="submit" value="X">X</button>
+          <input class="delete-button" type="submit" value="X" />
         </form>
-        {% endif %}
-        <h3>[판매중]{{ post.title }}개</h3>
-        <p>{{ post.price }}원</p>
-        <p>Posted by: {{ post.author }}</p>
-        <p>Date: {{ post.date }}</p>
+        {% else %}
         <a>
           <button
             type="button"
@@ -64,6 +64,8 @@
             구매
           </button>
         </a>
+        {% endif %}
+
         <div
           class="modal fade"
           id="purchaseModal{{ post.id }}"
